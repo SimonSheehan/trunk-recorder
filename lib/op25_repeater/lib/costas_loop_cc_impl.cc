@@ -29,6 +29,7 @@
 #include <gnuradio/io_signature.h>
 #include <gnuradio/math.h>
 #include <gnuradio/sincos.h>
+#include <boost/format.hpp>
 
 static const float      M_TWOPI = 2.0f * M_PI;
 static const gr_complex PT_45   = gr_expj( M_PI / 4.0 );

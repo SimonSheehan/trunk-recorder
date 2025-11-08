@@ -148,6 +148,36 @@ if (STREAMER)
 endif()
 
 ########################################################################
+# Setup boost
+########################################################################
+MESSAGE(STATUS "Configuring Boost C++ Libraries...")
+
+# Although not required on my system, some users have linking issues without
+SET(BOOST_REQUIRED_COMPONENTS
+    thread
+    program_options
+    filesystem
+    log_setup
+    log
+    regex
+    random
+)
+
+find_package(Boost COMPONENTS ${BOOST_REQUIRED_COMPONENTS} REQUIRED)
+
+if(NOT Boost_FOUND)
+    message(FATAL_ERROR "Boost required to build " ${CMAKE_PROJECT_NAME})
+endif()
+
+ADD_DEFINITIONS(-DBOOST_ALL_DYN_LINK)
+ADD_DEFINITIONS(-DBOOST_BIND_GLOBAL_PLACEHOLDERS)
+if(NOT EXISTS /usr/include/spdlog/fmt/bundled)
+  ADD_DEFINITIONS(-DSPDLOG_FMT_EXTERNAL)
+endif()
+add_definitions(-DGNURADIO_VERSION=${GNURADIO_VERSION})
+message(STATUS "Gnuradio Version is: " ${Gnuradio_VERSION})
+
+########################################################################
 # Setup the include and linker paths
 ########################################################################
 include_directories(

@@ -25,9 +25,9 @@
 #define INCLUDED_OP25_REPEATER_FSK4_DEMOD_FF_IMPL_H
 
 #if GNURADIO_VERSION >= 0x030a00
+#include <boost/smart_ptr/scoped_array.hpp>
 #endif
 #include <op25_repeater/fsk4_demod_ff.h>
-#include <vector>
 
 namespace gr {
   namespace op25_repeater  {
@@ -36,7 +36,7 @@ namespace gr {
     {
      private:
       float d_block_rate;
-      std::vector<float> d_history;
+      boost::scoped_array<float> d_history;
       size_t d_history_last;
       gr::msg_queue::sptr d_queue;
       double d_symbol_clock;
