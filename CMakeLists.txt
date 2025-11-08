@@ -148,40 +148,9 @@ if (STREAMER)
 endif()
 
 ########################################################################
-# Setup boost
-########################################################################
-MESSAGE(STATUS "Configuring Boost C++ Libraries...")
-
-# Although not required on my system, some users have linking issues without
-SET(BOOST_REQUIRED_COMPONENTS
-    thread
-    program_options
-    filesystem
-    log_setup
-    log
-    regex
-    random
-)
-
-find_package(Boost COMPONENTS ${BOOST_REQUIRED_COMPONENTS} REQUIRED)
-
-if(NOT Boost_FOUND)
-    message(FATAL_ERROR "Boost required to build " ${CMAKE_PROJECT_NAME})
-endif()
-
-ADD_DEFINITIONS(-DBOOST_ALL_DYN_LINK)
-ADD_DEFINITIONS(-DBOOST_BIND_GLOBAL_PLACEHOLDERS)
-if(NOT EXISTS /usr/include/spdlog/fmt/bundled)
-  ADD_DEFINITIONS(-DSPDLOG_FMT_EXTERNAL)
-endif()
-add_definitions(-DGNURADIO_VERSION=${GNURADIO_VERSION})
-message(STATUS "Gnuradio Version is: " ${Gnuradio_VERSION})
-
-########################################################################
 # Setup the include and linker paths
 ########################################################################
 include_directories(
-    ${Boost_INCLUDE_DIRS}
     ${GNURADIO_RUNTIME_INCLUDE_DIRS}
     ${GNURADIO_OSMOSDR_INCLUDE_DIRS}
     ${CMAKE_BINARY_DIR}/lib
@@ -197,7 +166,6 @@ include_directories(
 #)
 
 link_directories(
-    ${Boost_LIBRARY_DIRS}
     ${GNURADIO_RUNTIME_LIBRARY_DIRS}
     ${GROSMOSDR_LIBRARIES_DIRS}
     ${GNURADIO_UHD_LIBRARIES_DIRS}
@@ -356,7 +324,7 @@ endforeach()
 
 add_executable(trunk-recorder trunk-recorder/main.cc) # ${trunk_recorder_sources})
 
-target_link_libraries(trunk-recorder git trunk_recorder_library gnuradio-op25_repeater   ${CMAKE_DL_LIBS} ssl crypto ${CURL_LIBRARIES} ${Boost_LIBRARIES} ${GNURADIO_PMT_LIBRARIES} ${GNURADIO_RUNTIME_LIBRARIES} ${GNURADIO_FILTER_LIBRARIES} ${GNURADIO_DIGITAL_LIBRARIES} ${GNURADIO_ANALOG_LIBRARIES} ${GNURADIO_AUDIO_LIBRARIES} ${GNURADIO_UHD_LIBRARIES} ${UHD_LIBRARIES} ${GNURADIO_BLOCKS_LIBRARIES} ${GNURADIO_OSMOSDR_LIBRARIES} ) # gRPC::grpc++_reflection protobuf::libprotobuf)
+target_link_libraries(trunk-recorder git trunk_recorder_library gnuradio-op25_repeater   ${CMAKE_DL_LIBS} ssl crypto ${CURL_LIBRARIES} ${GNURADIO_PMT_LIBRARIES} ${GNURADIO_RUNTIME_LIBRARIES} ${GNURADIO_FILTER_LIBRARIES} ${GNURADIO_DIGITAL_LIBRARIES} ${GNURADIO_ANALOG_LIBRARIES} ${GNURADIO_AUDIO_LIBRARIES} ${GNURADIO_UHD_LIBRARIES} ${UHD_LIBRARIES} ${GNURADIO_BLOCKS_LIBRARIES} ${GNURADIO_OSMOSDR_LIBRARIES} ) # gRPC::grpc++_reflection protobuf::libprotobuf)
 
 #target_link_libraries(trunk-recorder PRIVATE nlohmann_json::nlohmann_json )
 
