@@ -34,8 +34,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <cstdio>
-#include <sstream>
 #include <stdexcept>
+#include <sstream>
 
 #ifdef _MSC_VER
 #define GR_FSEEK _fseeki64
@@ -155,18 +155,18 @@ bool iqfile_source_impl::seek(int64_t seek_point, int whence)
             seek_point = d_length_items - seek_point;
             break;
         default:
-            d_logger->warn("bad seek mode {:d}", whence);
+            GR_LOG_WARN(d_logger, "bad seek mode");
             return 0;
         }
 
         if ((seek_point < (int64_t)d_start_offset_items) ||
             (seek_point > (int64_t)(d_start_offset_items + d_length_items - 1))) {
-            d_logger->warn("bad seek point {:d}", seek_point);
+            GR_LOG_WARN(d_logger, "bad seek point");
             return 0;
         }
         return GR_FSEEK((FILE*)d_fp, seek_point * d_itemsize, SEEK_SET) == 0;
     } else {
-        d_logger->warn("file not seekable");
+        GR_LOG_WARN(d_logger, "file not seekable");
         return 0;
     }
 }
