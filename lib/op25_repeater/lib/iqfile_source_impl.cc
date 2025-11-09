@@ -1,7 +1,7 @@
 /* -*- c++ -*- */
 /*
  * Copyright 2012, 2018 Free Software Foundation, Inc.
- * Copyright 2021-2025 Graham J. Norbury
+ * Copyright 2021 Graham J. Norbury
  *
  * This file is part of GNU Radio
  *
@@ -35,7 +35,6 @@
 #include <sys/types.h>
 #include <cstdio>
 #include <stdexcept>
-#include <sstream>
 
 #ifdef _MSC_VER
 #define GR_FSEEK _fseeki64
@@ -186,14 +185,14 @@ void iqfile_source_impl::open(const char* filename,
     }
 
     if ((d_new_fp = fopen(filename, "rb")) == NULL) {
-        d_logger->error("[fopen] {:s}: {:s}", filename, strerror(errno));
+        GR_LOG_ERROR(d_logger, (boost::format("%s: %s") % filename % strerror(errno)).str());
         throw std::runtime_error("can't open file");
     }
 
     struct GR_STAT st;
 
     if (GR_FSTAT(GR_FILENO(d_new_fp), &st)) {
-        d_logger->error("[fstat] {:s}: {:s}", filename, strerror(errno));
+        GR_LOG_ERROR(d_logger, (boost::format("%s: %s") % filename % strerror(errno)).str());
         throw std::runtime_error("can't fstat file");
     }
     if (S_ISREG(st.st_mode)) {
@@ -212,11 +211,9 @@ void iqfile_source_impl::open(const char* filename,
         // Make sure there will be at least one item available
         if ((file_size / d_itemsize) < (start_offset_items + 1)) {
             if (start_offset_items) {
-                d_logger->warn("file is too small for start offset: {:d} < {:d}",
-                               file_size - 1,
-                               start_offset_items * d_itemsize);
+                GR_LOG_WARN(d_logger, "file is too small for start offset");
             } else {
-                d_logger->warn("file is too small ({:d})", file_size);
+                GR_LOG_WARN(d_logger, "file is too small");
             }
             fclose(d_new_fp);
             throw std::runtime_error("file is too small");
@@ -231,9 +228,7 @@ void iqfile_source_impl::open(const char* filename,
     if (length_items == 0) {
         length_items = items_available;
         if (file_size % d_itemsize) {
-            d_logger->warn("file size is not a multiple of item size ({:d} ≠ N·{:d})",
-                           file_size,
-                           d_itemsize);
+            GR_LOG_WARN(d_logger, "file size is not a multiple of item size");
         }
     }
 
@@ -241,9 +236,7 @@ void iqfile_source_impl::open(const char* filename,
     // exception.
     if (length_items > items_available) {
         length_items = items_available;
-        d_logger->warn("file too short, will read fewer than requested items {:d} > {:d}",
-                       length_items,
-                       items_available);
+        GR_LOG_WARN(d_logger, "file too short, will read fewer than requested items");
     }
 
     // Rewind to start offset
