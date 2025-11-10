@@ -370,9 +370,6 @@ bool analog_recorder::start(Call *call) {
   talkgroup = call->get_talkgroup();
   chan_freq = call->get_freq();
 
-
-
-  // BOOST_LOG_TRIVIAL(error) << "Setting squelch to: " << squelch_db << " block says: " << squelch->threshold();
   
   levels->set_k(system->get_analog_levels());
   int d_max_dev = system->get_max_dev();

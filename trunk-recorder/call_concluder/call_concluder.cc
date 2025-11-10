@@ -173,7 +173,6 @@ void remove_call_files(Call_Data_t call_info) {
             boost::filesystem::path transmission_file = t.filename;
             boost::filesystem::copy_file(transmission_file, target_file);
           #endif
-        //boost::filesystem::path target_file = boost::filesystem::path(call_info.filename).replace_filename(transmission_file.filename()); // takes the capture dir from the call file and adds the transmission filename to it
         }
 
       }
@@ -273,8 +272,6 @@ Call_Data_t upload_call_worker(Call_Data_t call_info) {
   return call_info;
 }
 
-
-// static int rec_counter=0;
 Call_Data_t Call_Concluder::create_base_filename(Call *call, Call_Data_t call_info) {
   char base_filename[255];
   time_t work_start_time = call->get_start_time();
